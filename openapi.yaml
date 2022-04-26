@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: List Code Owners of a given list of repositories
+  description: This app lists all Code Owners from a given list of repositories hosted on Github.com
+  version: '1.0'
+  contact:
+    name: Sergio Moya
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT.html'
+servers:
+  - url: 'https://github-codeowners.netlify.app'
+paths:
+  /.netlify/functions/list:
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - repo
+                    - paths
+                  properties:
+                    repo:
+                      type: string
+                      minLength: 1
+                    paths:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - path
+                        properties:
+                          path:
+                            type: string
+                            minLength: 1
+                          owners:
+                            type: array
+                            items:
+                              required: []
+                              properties: {}
+                x-examples:
+                  example-1:
+                    - repo: asyncapi/spec
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@derberg'
+                            - '@dalelane'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/parser-js
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@magicmatatjahu'
+                            - '@jonaslagoni'
+                            - '@derberg'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/spec-json-schemas
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@derberg'
+                            - '@dalelane'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/event-gateway
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@smoya'
+                            - '@magicmatatjahu'
+                            - '@asyncapi-bot-eve'
+              examples:
+                example:
+                  value:
+                    - repo: asyncapi/spec
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@derberg'
+                            - '@dalelane'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/parser-js
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@magicmatatjahu'
+                            - '@jonaslagoni'
+                            - '@derberg'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/spec-json-schemas
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@fmvilas'
+                            - '@derberg'
+                            - '@dalelane'
+                            - '@asyncapi-bot-eve'
+                    - repo: asyncapi/event-gateway
+                      paths:
+                        - path: '*'
+                          owners:
+                            - '@smoya'
+                            - '@magicmatatjahu'
+                            - '@asyncapi-bot-eve'
+            text/plain:
+              schema:
+                type: string
+              examples:
+                example:
+                  value: asyncapi/spec Path * - @fmvilas - @derberg - @dalelane - @asyncapi-bot-eve asyncapi/parser-js Path * - @fmvilas - @magicmatatjahu - @jonaslagoni - @derberg - @asyncapi-bot-eve asyncapi/spec-json-schemas Path * - @fmvilas - @derberg - @dalelane - @asyncapi-bot-eve asyncapi/event-gateway Path * - @smoya - @magicmatatjahu - @asyncapi-bot-eve
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+      operationId: list-code-owners
+      description: List Code Owners from a given list of GH repositories
+      parameters:
+        - schema:
+            type: string
+            example: asyncapi/spec
+            uniqueItems: true
+          in: query
+          name: repo
+          required: true
+          description: 'Repository with format: `<owner>/<repo-name>`. Note this is a multiple value query param, so you can declare it several times with different values'
+        - schema:
+            type: string
+          in: query
+          name: format
+          description: Print format
+        - schema:
+            type: string
+          in: query
+          name: gh_token
+          description: Overrides the application GH token. Useful if you need to see private repositories
+      x-internal: false

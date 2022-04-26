@@ -25,7 +25,9 @@ func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse
 
 	repos := req.MultiValueQueryStringParameters["repo"]
 	if len(repos) == 0 {
-		repos = []string{req.QueryStringParameters["repo"]}
+		if repo := req.QueryStringParameters["repo"]; repo != "" {
+			repos = []string{repo}
+		}
 	}
 
 	if len(repos) == 0 {
